@@ -6,14 +6,15 @@ const { gameManagerMachine } = require('./machines/GameManagerMachine');
 const { interpret } = require('xstate');
 
 var http = require('http').createServer(app);
-var io = require('socket.io')(http, { origins: 'http://localhost:3000 https://fun.frasermcintosh.com' });
-// io.origins((origin, callback) => {
-//   console.log('HLKJALD', origin);
-//   if (origin !== 'http://localhost:3000') {
-//     return callback('origin not allowed', false);
-//   }
-//   callback(null, true);
-// });
+var io = require('socket.io')(http);
+io.origins((origin, callback) => {
+  console.log('Origin', allowed.includes(origin), origin);
+  const allowed = ['http://localhost:3000', 'https://fun.frasermcintosh.com'];
+  if (!allowed.includes(origin)) {
+    return callback('origin not allowed', false);
+  }
+  callback(null, true);
+});
 
 const service = interpret(gameManagerMachine.withContext({ ...gameManagerMachine.context, io }))
   .onTransition((state) => {
