@@ -8,8 +8,9 @@ const { interpret } = require('xstate');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 io.origins((origin, callback) => {
-  console.log('Origin', allowed.includes(origin), origin);
   const allowed = ['http://localhost:3000', 'https://fun.frasermcintosh.com'];
+  console.log('Origin', allowed.includes(origin), origin);
+
   if (!allowed.includes(origin)) {
     return callback('origin not allowed', false);
   }
